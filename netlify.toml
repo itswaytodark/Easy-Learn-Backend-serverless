@@ -1,0 +1,9 @@
+[build]
+  command = "npm install" # Or keep as "# no build command" if you prefer
+  functions = "netlify/functions"
+  publish = "" # Not needed for backend-only
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api"
+  status = 200
