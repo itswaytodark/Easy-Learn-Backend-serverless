@@ -1,5 +1,5 @@
 import express from 'express';
-import { createBlog, deleteBlog, deleteBlogById, getBlogs, getSingleBlog, getUserBlogs, updateBlog } from '../controllers/blogController.js';
+import { createBlog, deleteBlog, deleteBlogById, getBlogs, getSingleBlog, getUserBlogs, searchBlogsByUsername, updateBlog } from '../controllers/blogController.js';
 import { userAuth } from '../middelware/userAuth.js';
 import multer from '../config/multer.js';
 
@@ -14,6 +14,7 @@ blogRouter.get('/blog/:id', getSingleBlog);
 blogRouter.get('/my-blogs', userAuth, getUserBlogs);
 blogRouter.delete('/delete/:id', userAuth, deleteBlogById);
 
+blogRouter.get('/search', searchBlogsByUsername);
 
 
 export default blogRouter;

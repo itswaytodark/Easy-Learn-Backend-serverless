@@ -1,5 +1,6 @@
 import blogModel from '../Models/blog.models.js'; 
 import cloudinary from '../config/cloudinary.js';
+import userModel from "../Models/userModels.js"
 
 export const createBlog = async (req, res) => {
   try {
@@ -151,3 +152,37 @@ export const deleteBlogById = async (req, res) => {
   }
 };
 
+export const searchBlogsByUsername = async (req, res) => {
+  try {
+    
+    const { username } = req.query;
+
+    if (!username) {
+      return res.status(400).json({ message: "Please provide a username for searching." });
+    }
+
+   
+    const users = await userModel.find({ 
+      name: { $regex: username, $options: 'i' } 
+    }).select('_id'); // Only select the IDs
+
+   
+    const userIds = users.map(user => user._id);
+    
+   
+    if (userIds.length === 0) {
+      return res.status(200).json({ status: 'success', blogs: [], message: "No users found with that name." });
+    }
+
+    
+    const blogs = await blogModel.find({ 
+      owner: { $in: userIds } 
+    }).populate('owner', 'name email -_id'); // Populate to show the user's name in the response
+
+    res.status(200).json({ status: 'success', blogs });
+
+  } catch (error) {
+    console.error("Search blogs by username error: ", error);
+    res.status(500).json({ message: "Server error during username search", error: error.message });
+  }
+};
